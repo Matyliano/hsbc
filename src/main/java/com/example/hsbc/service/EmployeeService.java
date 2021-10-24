@@ -1,15 +1,22 @@
 package com.example.hsbc.service;
 
 
+import com.example.hsbc.dto.EmployeeDto;
 import com.example.hsbc.entity.Employee;
 import com.example.hsbc.exception.CustomException;
 import com.example.hsbc.repository.EmployeeRepository;
+import com.example.hsbc.util.EmployeeRequestQuery;
+import com.example.hsbc.util.EmployeeUtils;
+import com.example.hsbc.util.RequestSearchEmployeeCriteria;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -17,11 +24,15 @@ import java.util.Optional;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeRequestQuery employeeRequestQuery;
+    private final EmployeeUtils employeeUtils;
 
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, EmployeeRequestQuery employeeRequestQuery, EmployeeUtils employeeUtils) {
         this.employeeRepository = employeeRepository;
 
+        this.employeeRequestQuery = employeeRequestQuery;
+        this.employeeUtils = employeeUtils;
     }
 
     public Employee save(Employee employee) {
@@ -65,5 +76,16 @@ public class EmployeeService {
         log.info("Delete employee with ID " + id);
         this.employeeRepository
                 .deleteById(id);
+    }
+
+    public Page<EmployeeDto> getEmployeesBySearchCriteria(Pageable pageable, RequestSearchEmployeeCriteria searchCriteria) {
+        List<Object[]> result = employeeRequestQuery.getEmployeesBySearchCriteria(pageable, searchCriteria);
+        List<EmployeeDto> list = createEmployeeList(result);
+        return employeeUtils.createPageFromListOfEmployeesEntry(list, pageable);
+    }
+    private List<EmployeeDto> createEmployeeList(List<Object[]> result) {
+        return result.stream()
+                .map(EmployeeDto::buildOverallEntry)
+                .collect(Collectors.toList());
     }
 }

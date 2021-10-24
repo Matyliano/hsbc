@@ -1,8 +1,11 @@
 package controller;
 
 import com.example.hsbc.HsbcApplication;
+import com.example.hsbc.controller.EmployeeController;
 import com.example.hsbc.entity.Employee;
 import com.example.hsbc.service.EmployeeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -27,6 +31,8 @@ import java.util.List;
 import static com.example.hsbc.enums.Grade.BOSS;
 import static com.example.hsbc.enums.Grade.CHICKEN;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,7 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EmployeeControllerTest {
 
+
     private MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @Autowired
     private WebApplicationContext wac;
@@ -167,4 +177,5 @@ public class EmployeeControllerTest {
                         .value("Employee with ID: '999' not found."))
                 .andReturn();
     }
+
 }

@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 @Getter
 @Setter
@@ -23,4 +26,12 @@ public class EmployeeDto {
     private Grade grade;
     private Double salary;
 
+    public static EmployeeDto buildOverallEntry(Object[] result) {
+        return EmployeeDto.builder()
+                .name((String) result[0])
+                .surname(((String) result[1]))
+                .grade((Grade)result[2])
+                .salary((Double) result[3])
+                .build();
+    }
 }

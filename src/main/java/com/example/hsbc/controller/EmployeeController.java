@@ -6,11 +6,15 @@ import com.example.hsbc.exception.CustomException;
 import com.example.hsbc.exception.CustomResponse;
 import com.example.hsbc.mapper.EmployeeMapper;
 import com.example.hsbc.service.EmployeeService;
+import com.example.hsbc.util.RequestSearchEmployeeCriteria;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
@@ -26,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +42,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Validated
 public class EmployeeController {
+
+    private static final String EMPLOYEE_WITH_ID = "Employee with ID: '"; // Compliant
 
     private final EmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
@@ -129,7 +137,7 @@ public class EmployeeController {
         if (employeeService.findById(employeeDto.getId()).isPresent()) {
             return new ResponseEntity<>(employeeMapper.toDto(employeeService.update(employeeMapper.toEntity(employeeDto), id)), HttpStatus.OK);
         } else {
-            throw new CustomException("Employee with ID: '" + employeeDto.getId() + "' not found.");
+            throw new CustomException(EMPLOYEE_WITH_ID + employeeDto.getId() + "' not found.");
         }
     }
 
@@ -149,11 +157,18 @@ public class EmployeeController {
             this.employeeService.deleteById(id);
             return new ResponseEntity<>(
                     new CustomResponse(HttpStatus.OK.value(),
-                            "Employee with ID: '" + id + "' deleted."), HttpStatus.OK);
+                            EMPLOYEE_WITH_ID + id + "' deleted."), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(
                     new CustomResponse(HttpStatus.NOT_FOUND.value(),
-                            "Employee with ID: '" + id + "' not found."), HttpStatus.NOT_FOUND);
+                            EMPLOYEE_WITH_ID + id + "' not found."), HttpStatus.NOT_FOUND);
         }
+    }
+
+
+    @GetMapping("/getByCriteria")
+    public ResponseEntity<Page<EmployeeDto>> getEmployeeByCriteria(@PageableDefault(size = 15) Pageable pageable,
+                                     RequestSearchEmployeeCriteria requestEmployeeCriteria){
+        return ResponseEntity.status(HttpStatus.OK).body(employeeService.getEmployeesBySearchCriteria(pageable, requestEmployeeCriteria));
     }
 }
