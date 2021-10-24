@@ -23,13 +23,13 @@ public class EmployeeMapper {
                 .build();
     }
     public EmployeeDto toDtoWithOptional(Optional<Employee> employee) {
-        return EmployeeDto.builder()
-                .id(employee.get().getId())
-                .name(employee.get().getName())
-                .surname(employee.get().getSurname())
-                .grade(employee.get().getGrade())
-                .salary(employee.get().getSalary())
-                .build();
+        return employee.map(value -> EmployeeDto.builder()
+                .id(value.getId())
+                .name(value.getName())
+                .surname(value.getSurname())
+                .grade(value.getGrade())
+                .salary(value.getSalary())
+                .build()).orElse(null);
     }
 
     public Employee toEntity(EmployeeDto employeeDto) {
