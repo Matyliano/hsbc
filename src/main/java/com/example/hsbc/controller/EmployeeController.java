@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +41,7 @@ import java.util.Map;
 @Validated
 public class EmployeeController {
 
-    private static final String EMPLOYEE_WITH_ID = "Employee with ID: '"; // Compliant
+    private static final String EMPLOYEE_WITH_ID = "Employee with ID: '";
 
     private final EmployeeService employeeService;
     private final EmployeeMapper employeeMapper;
