@@ -162,7 +162,15 @@ public class EmployeeController {
                             EMPLOYEE_WITH_ID + id + "' not found."), HttpStatus.NOT_FOUND);
         }
     }
+    @Operation(summary = "Search employee by criteria ")
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "In case of a valid query, the status code 200 and an employees is search by criteria "),
+            @ApiResponse(code = 404, message = "In the absence of data  " +
+                    "404 Not Found is returned"),
+            @ApiResponse(code = 400, message = "In case of incorrectly formulated queries, the service returns" +
+                    " 400 Bad Request message")
+    })
 
     @GetMapping("/getByCriteria")
     public ResponseEntity<Page<EmployeeDto>> getEmployeeByCriteria(@PageableDefault(size = 15) Pageable pageable,
