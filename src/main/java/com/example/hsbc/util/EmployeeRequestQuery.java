@@ -22,7 +22,7 @@ public class EmployeeRequestQuery {
                     "from employee e \n";
 
 
-    public List getEmployeesBySearchCriteria (Pageable pageable, RequestSearchEmployeeCriteria reportsCriteria) {
+    public List<Object[]> getEmployeesBySearchCriteria (Pageable pageable, RequestSearchEmployeeCriteria reportsCriteria) {
 
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append(SELECT_QUERY);
