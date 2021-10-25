@@ -17,7 +17,7 @@ public class EmployeeRequestQuery {
 
     private final EntityManager entityManager;
 
-    private final static String SELECT_QUERY =
+    private static final  String SELECT_QUERY =
             "select concat(e.name, ' ', e.surname) as name,\n" +
                     "from employee e \n";
 
@@ -51,13 +51,10 @@ public class EmployeeRequestQuery {
     }
 
     private String buildFilterQuery(RequestSearchEmployeeCriteria searchCriteria) {
-        StringBuilder filterQuery = new StringBuilder();
-        filterQuery.append(CollectionUtils.isEmpty(searchCriteria.getName()) ? "" : "and e.name in :name \n");
-        filterQuery.append(CollectionUtils.isEmpty(searchCriteria.getSurname()) ? "" : "and e.surname in :surname \n");
-        filterQuery.append(CollectionUtils.isEmpty(searchCriteria.getGrade()) ? "" : "and e.grade in :grade \n");
-        filterQuery.append(CollectionUtils.isEmpty(searchCriteria.getSalary()) ? "" : "and e.salary in :salary \n");
-
-        return filterQuery.toString();
+        return (CollectionUtils.isEmpty(searchCriteria.getName()) ? "" : "and e.name in :name \n") +
+                (CollectionUtils.isEmpty(searchCriteria.getSurname()) ? "" : "and e.surname in :surname \n") +
+                (CollectionUtils.isEmpty(searchCriteria.getGrade()) ? "" : "and e.grade in :grade \n") +
+                (CollectionUtils.isEmpty(searchCriteria.getSalary()) ? "" : "and e.salary in :salary \n");
     }
 
     private void addSorting(Pageable pageable, StringBuilder queryBuilder) {
